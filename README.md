@@ -4,7 +4,7 @@ Welcome to our OpenCV tutorial! In this guide, we will take you through basic im
 
 ---
 
-## 1. Read and Show Image Preview 🖼️
+## Read and Show Image Preview 🖼️
 
 To read an image and display it, we can use the following code:
 
@@ -31,7 +31,7 @@ cv.waitKey(delay=0)
 
 ---
 
-## 2. **Read and Show Video Preview 🎥**
+## **Read and Show Video Preview 🎥**
 
 To work with videos, we need to use `cv.VideoCapture()` to load the video file. The `cap.read()` method returns two outputs:
 1. The status of the video (True if the video is still running, False if it ends).
@@ -59,7 +59,7 @@ if cv.waitKey(33) & 0xFF == ord("q"):
 
 ---
 
-## 3. **Create Blank Images 📝**
+## **Create Blank Images 📝**
 
 You can create black and white blank images using `np.zeros()` and `np.ones()`. The `zeros()` function creates a black image, and `ones()` creates a white image.
 
@@ -77,7 +77,7 @@ cv.waitKey(0)
 
 ---
 
-## 4. **Draw Shapes and Text ✏️**
+## **Draw Shapes and Text ✏️**
 
 Now, let's add shapes like lines, rectangles, and circles, or even add text to our images.
 
@@ -113,29 +113,8 @@ cv.putText(black_blank_image, "Hello World", (100, 100), cv.FONT_HERSHEY_COMPLEX
 ```
 This adds the text "Hello World" at coordinates `(100, 100)` using a complex font style with size 1 and a blue color.
 
-
-## Key Points to Remember:
-- **Color Format**: In OpenCV, the color format is **BGR** (Blue, Green, Red) instead of the more common RGB (Red, Green, Blue).
-- **waitKey()**: This is used to display the image or video until a key is pressed or a certain amount of time has passed.
-- **Video Capture**: To read video frames, use `cv.VideoCapture()` and the `.read()` method to fetch each frame in a loop.
-
 ---
-
-## 5. Resizing and Cropping 🔄
-
-### Resizing an Image:
-```python
-image = cv.imread(filepath)
-resized_image = cv.resize(image, (200, 200)) # Resize to 200x200 pixels
-```
-
-### Cropping an Image:
-```python
-cropped_image = image[100:400, 200:450] # Crop region from (200,100) to (450,400)
-```
-
----
-# 1. Resizing and Cropping 🔄
+## 1. Resizing and Cropping 🔄
 
 ### Resizing an Image
 To resize an image in OpenCV, use the `cv.resize()` function. It takes:
@@ -162,7 +141,7 @@ cropped_image = image[100:400, 200:450]  # Crop region from (200,100) to (450,40
 
 ---
 
-## 2. Changing Image Channels 🎨
+## Changing Image Channels 🎨
 
 OpenCV images are in BGR format by default, which can cause color issues when using libraries like `matplotlib` that expect RGB. Convert color channels as needed.
 
@@ -184,7 +163,7 @@ This approach allows you to work with different color formats supported by OpenC
 
 ---
 
-## 3. Blurring Images 🌫️
+## Blurring Images 🌫️
 
 Blurring an image softens it by averaging nearby pixel values. A Gaussian blur can be applied using `cv.GaussianBlur()`.
 
@@ -201,7 +180,7 @@ Increasing kernel size or sigma creates a stronger blur effect.
 
 ---
 
-## 4. Canny Edge Detection 🧑‍💻
+## Canny Edge Detection 🧑‍💻
 
 Canny edge detection highlights rapid intensity changes in an image, useful for finding edges.
 
@@ -215,7 +194,7 @@ edges = cv.Canny(image, 100, 200)
 
 ---
 
-## 5. Erosion and Dilation 🌌
+## Erosion and Dilation 🌌
 
 Erosion and dilation are morphological transformations useful for refining image details and separating connected components.
 
