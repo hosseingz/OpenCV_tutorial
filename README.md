@@ -114,7 +114,7 @@ cv.putText(black_blank_image, "Hello World", (100, 100), cv.FONT_HERSHEY_COMPLEX
 This adds the text "Hello World" at coordinates `(100, 100)` using a complex font style with size 1 and a blue color.
 
 ---
-## 1. Resizing and Cropping 🔄
+## **Resizing and Cropping 🔄**
 
 ### Resizing an Image
 To resize an image in OpenCV, use the `cv.resize()` function. It takes:
@@ -141,7 +141,7 @@ cropped_image = image[100:400, 200:450]  # Crop region from (200,100) to (450,40
 
 ---
 
-## Changing Image Channels 🎨
+## **Changing Image Channels 🎨**
 
 OpenCV images are in BGR format by default, which can cause color issues when using libraries like `matplotlib` that expect RGB. Convert color channels as needed.
 
@@ -163,7 +163,7 @@ This approach allows you to work with different color formats supported by OpenC
 
 ---
 
-## Blurring Images 🌫️
+## **Blurring Images 🌫️**
 
 Blurring an image softens it by averaging nearby pixel values. A Gaussian blur can be applied using `cv.GaussianBlur()`.
 
@@ -180,7 +180,7 @@ Increasing kernel size or sigma creates a stronger blur effect.
 
 ---
 
-## Canny Edge Detection 🧑‍💻
+## **Canny Edge Detection 🧑‍💻**
 
 Canny edge detection highlights rapid intensity changes in an image, useful for finding edges.
 
@@ -194,7 +194,7 @@ edges = cv.Canny(image, 100, 200)
 
 ---
 
-## Erosion and Dilation 🌌
+## **Erosion and Dilation 🌌**
 
 Erosion and dilation are morphological transformations useful for refining image details and separating connected components.
 
@@ -253,9 +253,161 @@ cv.waitKey(0)
 
 ![Erosion_and_Dilation](Erosion_and_Dilation.png)
 
+
 ---
 
-## Key Points to Remember:
+## **Stacking 📐**
+
+To place two images side-by-side or on top of each other, we use the following method:
+
+👉 Place the images as a list in the input. An important note is that the images must be the same size to be stacked.
+
+```python
+image1 = cv.imread("img/1.jpg")
+image2 = cv.imread("img/2.jpg")
+
+vstack = cv.vconcat([image1, image2])  # Vertical concatenation ⬇️
+hstack = cv.hconcat([image1, image2])  # Horizontal concatenation ➡️
+
+# You can also do this using NumPy:
+# np_vstack = np.vstack((image1, image2))
+# np_hstack = np.hstack((image1, image2))
+
+cv.imshow("Vertical concatenation", vstack)
+cv.imshow("Horizontal concatenation", hstack)
+
+cv.waitKey(0)
+```
+
+---
+
+## **Image Contours ✏️**
+
+Contours represent the boundaries of shapes in an image, allowing us to highlight and analyze these shapes.
+
+🔎 **To find contours in an image, follow these steps**:
+1. Convert the image to grayscale.
+2. Apply a binary threshold.
+
+Below is an example of how to use thresholding. The types of thresholds are shown below:
+
+![Threshold Types](treshold_types.png)
+
+In this example, we use binary thresholding, which turns the image black and white by mapping pixel values to either 0 or 255.
+
+```python
+image = cv.imread("img/1.jpg")
+image_gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+
+val, image = cv.threshold(image_gray, 127, 255, cv.THRESH_BINARY)
+
+cv.imshow("Black and white image", image)
+cv.waitKey(0)
+```
+
+🔧 **This code outputs two values**:
+- `val`: The threshold value defined earlier.
+- `image`: The thresholded image.
+
+---
+
+📌 **Next, we find the contours using**:
+1. The target image.
+2. The mode (e.g., tree or list).
+3. The method (e.g., how the contours should be stored).
+
+The `CHAIN_APPROX_SIMPLE` method simplifies the contour by returning only key points, like four corners of a rectangle, instead of the entire boundary.
+
+![Simple Method Example](simple_method.png)
+
+💡 For optimal memory usage, this method can be useful. Using `cv.RETR_TREE`, the coordinates of the entire boundary will be returned.
+
+```python
+contours, hierarchy = cv.findContours(image, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+```
+
+🔄 **The method returns**:
+1. **Contours**: The coordinates of the detected shapes.
+2. **Hierarchy**: A matrix with four columns, detailing the nesting of shapes. For example, if a rectangle contains a square and a circle inside it, the matrix indicates that the rectangle is the parent and the other shapes are its children.
+
+---
+
+🖊️ **Finally, draw the contours**:
+- The target image.
+- The contours.
+- The index (use `-1` to draw all contours).
+- The color for drawing.
+
+```python
+image = cv.imread("img/1.jpg")
+contours, hierarchy = cv.findContours(image, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+drawn_contours = cv.drawContours(image, contours, -1, (255, 0, 0))
+```
+
+✂️ **To extract one of the detected shapes, use**:
+
+```python
+contours, hierarchy = cv.findContours(image_tr, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+x, y, w, h = cv.boundingRect(contours[2])
+```
+
+📏 **Draw a rectangle using `cv.rectangle()`**:
+
+```python
+x, y, w, h = cv.boundingRect(contours[2])
+cv.rectangle(image, (x, y), (x + w, y + h), (255, 255, 0))
+```
+
+---
+
+## **Face Detection 😊**
+
+To perform face detection, download the necessary model from [this link](https://github.com/opencv/opencv/tree/4.x/data/haarcascades). In this tutorial, we use **haarcascade_frontalface_default.xml**.
+
+⚙️ **Initialize the cascade**:
+
+```python
+faceCascade = cv.CascadeClassifier("haarcascade_frontalface_default.xml")
+```
+
+🕵️ **Detect faces**:
+
+```python
+faceCascade = cv.CascadeClassifier("haarcascade_frontalface_default.xml")
+image = cv.imread("img/1.jpg")
+
+faces = faceCascade.detectMultiScale(image, 1.2, 7)
+
+for x, y, w, h in faces:
+    cv.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0))
+
+cv.imshow("Face detection", image)
+cv.waitKey(0)
+```
+
+📹 **For video detection**:
+
+```python
+faceCascade = cv.CascadeClassifier("haarcascade_frontalface_default.xml")
+cap = cv.VideoCapture('vid/1.mp4')
+
+while True:
+    _, frame = cap.read()
+    faces = faceCascade.detectMultiScale(frame, 1.2, 7)
+
+    for x, y, w, h in faces:
+        cv.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255))
+
+    cv.imshow("Face detection", frame)
+    if cv.waitKey(30) & 0xFF == ord('q'):  # Press 'q' to quit
+        break
+```
+
+🖥️ **To use the webcam, set `cap = cv.VideoCapture(0)`. For external cameras, use numbers higher than 0 as input**.
+
+---
+
+## **Key Points to Remember:**
 - **Color Format**: OpenCV uses **BGR** (Blue, Green, Red) instead of the more common RGB (Red, Green, Blue).
 - **waitKey()**: Used to display images or videos until a key is pressed or a certain amount of time has passed.
 - **Video Capture**: Use `cv.VideoCapture()` and `.read()` to fetch each frame from a video in a loop.
