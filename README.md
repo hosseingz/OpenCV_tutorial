@@ -105,6 +105,40 @@ cv.circle(black_blank_image, (100, 100), 30, (255, 0, 0), 3)
 ```
 This draws a circle with a radius of 30 pixels centered at `(100, 100)`.
 
+
+### **Creating Blank Images with Custom Colors 🖌️**
+
+To create a blank image of a specific color, use this method:
+
+```python
+blank = np.zeros((500, 500, 3), dtype='uint8')  # Blank black image
+blank[:] = 0, 255, 0  # Green color
+
+cv.imshow("Green", blank)
+cv.waitKey(0)
+```
+
+### Partially Coloring a Blank Image
+
+To color a specific section of the blank image:
+
+```python
+blank = np.zeros((500, 500, 3), dtype='uint8')
+
+blank[100:200, 250:350] = 0, 0, 255  # Red color in a specific region
+
+cv.imshow("Red Section", blank)
+cv.waitKey(0)
+```
+
+### **Drawing Shapes with Filled Areas 🖼️**
+
+To create filled shapes, set the `thickness` parameter to `cv.FILLED` or `-1`:
+
+```python
+cv.rectangle(image, (0, 0), (250, 500), color=(255, 0, 0), thickness=cv.FILLED)
+```
+
 ### Add Text:
 To add text, we need to provide the image, the text string, the coordinates for the text position, the font face, font size, and the color.
 
@@ -137,6 +171,59 @@ cropped_image = image[y:y+h, x:x+w]
 
 ```python
 cropped_image = image[100:400, 200:450]  # Crop region from (200,100) to (450,400)
+```
+
+---
+
+## **Rescaling Frames 📏**
+
+You can rescale a frame by a percentage using the following function:
+
+```python
+def rescale(frame, scale=0.75):
+    width = int(frame.shape[1] * scale)
+    height = int(frame.shape[0] * scale)
+
+    dimensions = (width, height)
+
+    return cv.resize(frame, dimensions, interpolation=cv.INTER_AREA)
+```
+
+---
+
+## **Splitting and Visualizing Color Channels 🌈**
+
+You can split the color channels of an image like this:
+
+```python
+image = cv.imread("img/1.jpg")
+
+b, g, r = cv.split(image)
+
+cv.imshow("Blue", b)
+cv.imshow("Green", g)
+cv.imshow("Red", r)
+
+cv.waitKey(0)
+```
+
+> **Note:** When visualizing separated channels, they appear as grayscale. To see the actual colors, merge the channels back with a black background:
+
+```python
+blank = np.zeros(image.shape[:2], dtype='uint8')
+image = cv.imread("img/1.jpg")
+
+b, g, r = cv.split(image)
+
+blue = cv.merge([b, blank, blank])
+green = cv.merge([blank, g, blank])
+red = cv.merge([blank, blank, r])
+
+cv.imshow("Blue", blue)
+cv.imshow("Green", green)
+cv.imshow("Red", red)
+
+cv.waitKey(0)
 ```
 
 ---
@@ -239,8 +326,8 @@ image_edges = cv.Canny(image, 200, 200)
 kernel = np.ones((5, 5), dtype="uint8")  # Structuring element: white squares
 
 # Apply dilation and erosion
-dilated_image = cv.dilate(image_edges, kernel, iterations=8)
 eroded_image = cv.erode(dilated_image, kernel, iterations=3)
+dilated_image = cv.dilate(image_edges, kernel, iterations=8)
 
 cv.imshow('Edges', image_edges)
 cv.imshow('Dilated Image', dilated_image)
@@ -356,6 +443,24 @@ x, y, w, h = cv.boundingRect(contours[2])
 ```python
 x, y, w, h = cv.boundingRect(contours[2])
 cv.rectangle(image, (x, y), (x + w, y + h), (255, 255, 0))
+```
+
+---
+
+## 🎭 Applying Masks to Images
+
+Use a mask to isolate a portion of the image:
+
+```python
+image = cv.imread("img/1.jpg")
+blank = np.zeros(image.shape[:2], dtype='uint8')
+
+circle = cv.circle(blank, (blank.shape[1]//2, blank.shape[0]//2), 50, (255, 255, 255), -1)
+
+masked = cv.bitwise_and(image, image, mask=circle)
+
+cv.imshow("Masked Image", masked)
+cv.waitKey(0)
 ```
 
 ---
